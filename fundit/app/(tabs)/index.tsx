@@ -10,12 +10,12 @@ export default function Index() {
         alignItems: "center",
       }}
     >
-      <Link href="/budget">
+      {/* <Link href="/budget">
         Go to Budget screen
       </Link>
       <Link href="/stock">
         Go to stock screen
-      </Link>
+      </Link> */}
 
 
     </View>
