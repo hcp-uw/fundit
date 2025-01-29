@@ -6,14 +6,14 @@ export default function index() {
         const auth = getAuth(app);    
         createUserWithEmailAndPassword(
             auth,
-            "hello.doe@example.com",
+            "navneethd8@gmail.com",
             "SuperSecretPassword!"
         )
             .then((res) => console.log(res))
             .catch((err) => console.log(err));
             
     }
-    
+
     return (
         <View style={styles.container}>
             <Text style={styles.text}>Check For Firebase Integration!</Text>
