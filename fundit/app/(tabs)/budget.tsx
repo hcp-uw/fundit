@@ -1,14 +1,20 @@
-import { Text, View, } from "react-native";
+import { Button, Text, View, } from "react-native";
 import { Link } from 'expo-router';
+import { useState } from "react";
 
 export default function Budget() {
+
+  const [hello,setHello] = useState(["hello","hi"]);
+
+
+
+  return(
     <View>
-            <Link href="/stock">
-    Go Back Home
-  </Link>
-  <Text>Hellop</Text>
+        <Text>{hello}</Text>
+
+      </View>
 
 
-    </View>
+  );
 
 }

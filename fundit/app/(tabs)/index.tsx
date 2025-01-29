@@ -1,23 +1,59 @@
-import { Text, View,  } from "react-native";
-import { Link } from 'expo-router';
+import { StyleSheet, Text, View, TouchableOpacity} from "react-native";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { app } from "../../firebaseConfig";
+import { initializeAuth, getReactNativePersistence } from 'firebase/auth/';
+import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
+export default function index() {
+    function signUp() {
+        const auth = getAuth(app);
 
-export default function Index() {
-  return (
-    <View 
-      style={{
+        createUserWithEmailAndPassword(
+            auth,
+            "hello.doe@example.com",
+            "SuperSecretPassword!"
+        )
+            .then((res) => console.log(res))
+            .catch((err) => console.log(err));
+            
+    }
+    // const auth = initializeAuth(app, {
+    //     persistence: getReactNativePersistence(ReactNativeAsyncStorage)
+    //   });
+      
+
+    return (
+        <View style={styles.container}>
+            <Text style={styles.text}>Check For Firebase Integration!</Text>
+
+                <TouchableOpacity style={styles.button_container} onPress={signUp}>
+                <Text style={styles.button_text}>SignUp</Text>
+            </TouchableOpacity>
+        </View>
+    );
+}
+
+const styles = StyleSheet.create({
+    container: {
         flex: 1,
         justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      {/* <Link href="/budget">
-        Go to Budget screen
-      </Link>
-      <Link href="/stock">
-        Go to stock screen
-      </Link> */}
-
-
-    </View>
-  );
-}
+        marginTop: 48,
+    },
+    text: {
+        fontWeight:"bold",
+        textAlign:"center",
+        fontSize:24,
+    },
+    button_text: {
+        textAlign:"center",
+        fontSize:24,
+        color:"#1976d2"
+    },
+    button_container: {
+        borderRadius: 15,
+        flexDirection: "row",
+        margin: 16,
+        padding:24,
+        justifyContent:"center",
+        backgroundColor:"#e6e6e6"
+    },
+});
