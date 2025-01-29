@@ -1,12 +1,9 @@
 import { StyleSheet, Text, View, TouchableOpacity} from "react-native";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { app } from "../../firebaseConfig";
-import { initializeAuth, getReactNativePersistence } from 'firebase/auth/';
-import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 export default function index() {
     function signUp() {
-        const auth = getAuth(app);
-
+        const auth = getAuth(app);    
         createUserWithEmailAndPassword(
             auth,
             "hello.doe@example.com",
@@ -16,11 +13,7 @@ export default function index() {
             .catch((err) => console.log(err));
             
     }
-    // const auth = initializeAuth(app, {
-    //     persistence: getReactNativePersistence(ReactNativeAsyncStorage)
-    //   });
-      
-
+    
     return (
         <View style={styles.container}>
             <Text style={styles.text}>Check For Firebase Integration!</Text>
