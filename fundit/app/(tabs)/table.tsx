@@ -1,4 +1,5 @@
 import React from 'react';
+import { Text } from 'react-native';
 
 /**
  * 
@@ -37,33 +38,15 @@ export default function Table(props: {length: number}) {
   }, []);
 
   if (loading) {
-    return <p>Loading...</p>;
+    return <Text>Loading...</Text>;
   }
 
   if (error) {
-    // return <p>Error: {error.message}</p>;
+    // return <Text>Error: {error.message}</Text>;
   }
 
   return (
-    <table>
-      <thead>
-        <tr>
-          <th>Symbol</th>
-          <th>Name</th>
-          <th>Price</th>
-        </tr>
-      </thead>
-      <tbody>
-        {/* input stock element thingmabob gig */}
-        {/* {stocks.map((stock) => (
-          <tr key={stock.symbol}>
-            <td>{stock.symbol}</td>
-            <td>{stock.name}</td>
-            <td>{stock.price}</td>
-          </tr>
-        ))} */}
-      </tbody>
-    </table>
+    <Text> table doop! </Text>
   );
 
 }
