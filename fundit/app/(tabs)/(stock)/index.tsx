@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, TouchableOpacity, TextInput } from "react-native";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { getFirestore, doc, setDoc, addDoc , collection } from "firebase/firestore"; // Import Firestore functions
-import { app} from "../../firebaseConfig";
+import {app} from "../../../firebaseConfig"
 import { useState } from "react";
 
 export default function Index() {
@@ -42,7 +42,7 @@ export default function Index() {
 
     return (
         <View>
-            <Text> Tabs Index</Text>
+            <Text> Stock Index</Text>
         </View>
     );
 }

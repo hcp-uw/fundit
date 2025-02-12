@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, TouchableOpacity, TextInput } from "react-native";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { getFirestore, doc, setDoc, addDoc , collection } from "firebase/firestore"; // Import Firestore functions
-import { app} from "../../firebaseConfig";
+import { app} from "../firebaseConfig";
 import { useState } from "react";
 
 export default function Index() {
@@ -41,8 +41,33 @@ export default function Index() {
     }
 
     return (
-        <View>
-            <Text> Tabs Index</Text>
+        <View style={styles.container}>  
+            <Text style={styles.text}>Sign Up!</Text>
+            <TextInput 
+                style={styles.input}
+                value={username} 
+                onChangeText={setUsername} 
+                placeholder="Enter Username"
+            />
+            <TextInput 
+                style={styles.input} 
+                value={email} 
+                onChangeText={setEmail} 
+                placeholder="Enter Email"
+                keyboardType="email-address"
+            />
+            <TextInput 
+                style={styles.input}
+                value={password} 
+                onChangeText={setPassword} 
+                placeholder="Enter Password" 
+                secureTextEntry 
+            />
+            
+            <TouchableOpacity style={styles.button_container} onPress={() => signUp()}>
+                <Text style={styles.button_text}>SignUp</Text>
+            </TouchableOpacity>
+
         </View>
     );
 }
