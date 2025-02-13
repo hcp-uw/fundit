@@ -1,32 +1,35 @@
 import { StyleSheet, Text, View, TouchableOpacity, TextInput } from "react-native";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import { getFirestore, doc, setDoc, addDoc , collection } from "firebase/firestore"; // Import Firestore functions
-import { app} from "../../firebaseConfig";
-import { useState } from "react";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { doc, getDoc, setDoc } from "firebase/firestore"; 
+import { app , db , auth} from "../../firebaseConfig";
+import { useRef, useState } from "react";
+import { router } from 'expo-router';
 
-export default function Index() {
-    const [username, setUsername] = useState("");
+export default function login() {
     const [password, setPassword] = useState("");
     const [email, setEmail] = useState("");
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-    async function signUp() {
-        if (!email || !password || !username) {
+    // const auth = getAuth(app);
+    async function login() {
+        console.log("Entering Login")
+        if (!email || !password) {
             console.log("All fields are required.");
             return;
         }
         try {
-            const res = await createUserWithEmailAndPassword(auth, email, password);
-            console.log("User created:", res.user.uid);
-
+            const res = await signInWithEmailAndPassword(auth, email, password);
             // Store user info in Firestore
-            const docRef = await addDoc(collection(db, "Users"), {
-                uid: res.user.uid,
-                username: username,
-                email: email,
-                createdAt: new Date().toISOString()
-              });
-              console.log("Document written with ID: ", docRef.id);
+
+            const userRef  = await getDoc(doc(db,"Users",res.user.uid));
+            console.log(useRef)
+            if (userRef.exists()) {
+                console.log("Document data:", userRef.data());
+                router.navigate("/(home)/home");
+              } else {
+                // docSnap.data() will be undefined in this case
+                console.log("No such document!");
+              }
+              
+
 
 
             console.log("User stored in Firestore");
@@ -42,13 +45,7 @@ export default function Index() {
 
     return (
         <View style={styles.container}>  
-            <Text style={styles.text}>Sign Up!</Text>
-            <TextInput 
-                style={styles.input}
-                value={username} 
-                onChangeText={setUsername} 
-                placeholder="Enter Username"
-            />
+            <Text style={styles.text}>Login</Text>
             <TextInput 
                 style={styles.input} 
                 value={email} 
@@ -64,9 +61,13 @@ export default function Index() {
                 secureTextEntry 
             />
             
-            <TouchableOpacity style={styles.button_container} onPress={() => signUp()}>
-                <Text style={styles.button_text}>SignUp</Text>
+            <TouchableOpacity style={styles.button_container} onPress={() =>{
+                login();
+            }}>
+                <Text style={styles.button_text}> Login </Text>
             </TouchableOpacity>
+
+
 
         </View>
     );

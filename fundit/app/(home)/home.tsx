@@ -1,15 +1,15 @@
 import { StyleSheet, Text, View, TouchableOpacity, TextInput } from "react-native";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import { getFirestore, doc, setDoc, addDoc , collection } from "firebase/firestore"; // Import Firestore functions
-import {app} from "../../../firebaseConfig"
+import { doc, setDoc } from "firebase/firestore"; 
+import { app , db , auth} from "../../firebaseConfig";
 import { useState } from "react";
+import { router } from 'expo-router';
 
-export default function Index() {
+export default function home() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [email, setEmail] = useState("");
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+    // const auth = getAuth(app);
     async function signUp() {
         if (!email || !password || !username) {
             console.log("All fields are required.");
@@ -20,16 +20,15 @@ export default function Index() {
             console.log("User created:", res.user.uid);
 
             // Store user info in Firestore
-            const docRef = await addDoc(collection(db, "Users"), {
+
+            await setDoc(doc(db,"Users",res.user.uid), {
                 uid: res.user.uid,
                 username: username,
                 email: email,
                 createdAt: new Date().toISOString()
-              });
-              console.log("Document written with ID: ", docRef.id);
+            });
+            router.back();
 
-
-            console.log("User stored in Firestore");
         } catch (err) {
             if (err instanceof Error) {
                 console.log("Error:", err.message);
@@ -41,8 +40,10 @@ export default function Index() {
     }
 
     return (
-        <View>
-            <Text> Stock Index</Text>
+        <View style={styles.container}>  
+        <Text> Home!</Text>
+
+
         </View>
     );
 }
