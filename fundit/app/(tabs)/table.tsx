@@ -19,24 +19,29 @@ useeffect
 useprops
  */
 
+const fakeData = {
+  
+}
+
 export default function Table(props: {length: number}) {
   const [stocks, setStocks] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState(null);
 
   function createTableEntry(data: any) {
+    const change = ((data.c - data.o) / data.o * 100).toFixed(2); // calculate percentage change
     return (
-      <View>
-        <Text style={styles.table_cell}>{data.name}</Text>
-        <Text style={styles.table_cell}>{data.change}</Text>
-        <Text style={styles.table_cell}>{data.price}</Text>
+      <View style={styles.table_row} >
+        <Text style={styles.table_cell}>{data.ticker}</Text> {/* stock name */}
+        <Text style={styles.table_cell}>{change}</Text> {/* stock change */}
+        <Text style={styles.table_cell}>{data.results.c}</Text> {/* stock price */}
       </View>
     );
 
   }
 
   // React.useEffect(() => {
-  //   fetch('https://api.stock.com/stocks') // replace with actual stock url
+  //   functionGetStockOrWhatever() // replace with actual stock url
   //     .then((response) => response.json())
   //     .then((data) => {
   //       setStocks(data);
@@ -85,7 +90,7 @@ export default function Table(props: {length: number}) {
           {/*  */}
 
           {/* uncomment when stock data comes */}
-          {/* {stocks.map((stock) => createTableEntry(stock))} */} 
+          {/* {stocks.slice(0, props.length).map(createTableEntry)} */} 
         </View>
 
       </View>
