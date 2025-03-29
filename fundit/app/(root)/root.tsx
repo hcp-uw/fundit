@@ -1,8 +1,6 @@
 import { StyleSheet, Text, View, TouchableOpacity,Image } from "react-native";
 import { useRouter } from "expo-router";  // Import useRouter from expo-router
 import Svg, { Path } from "react-native-svg";
-import {auth} from "../../firebaseConfig";
-import { useEffect } from "react";
 
 export default function Root() {
     const router = useRouter();  // Initialize router for navigation

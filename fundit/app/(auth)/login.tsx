@@ -16,7 +16,7 @@ export default function login() {
         const unsubscribe = auth.onAuthStateChanged((user) => {
             if (user) {
                 // User is signed in, navigate to home
-                router.navigate("/(home)/home");
+                router.replace("/(home)/home");
             } else {
                 // No user is signed in, remain on the login screen
                 console.log("No user is currently signed in.");

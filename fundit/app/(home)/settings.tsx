@@ -7,7 +7,7 @@ import { router } from 'expo-router';
 export default function settings() {
     const logOut = (auth: Auth) =>{
         signOut(auth).then(() => {
-            router.navigate("/(root)/root");
+            router.replace("/(root)/root");
         }).catch((error) => {
                 console.log(error)
             });        

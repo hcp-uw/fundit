@@ -9,9 +9,9 @@ export default function Index() {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
         if (user) {
-            router.navigate("/(home)/home");
+            router.replace("/(home)/home");
         } else {
-            router.navigate("/(root)/root");
+            router.replace("/(root)/root");
         }
     });
 
