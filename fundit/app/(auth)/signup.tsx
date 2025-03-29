@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, TouchableOpacity, TextInput } from "react-native";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore"; 
-import { app , db , auth} from "../../firebaseConfig";
+import { db , auth} from "../../firebaseConfig";
 import { useState } from "react";
 import { router } from 'expo-router';
 import Svg, { Path } from "react-native-svg";
@@ -10,7 +10,6 @@ export default function signup() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [email, setEmail] = useState("");
-    // const auth = getAuth(app);
     async function signUp() {
         if (!email || !password || !username) {
             console.log("All fields are required.");
@@ -42,6 +41,10 @@ export default function signup() {
 
     return (
         <View style={styles.container}>  
+            <View style={{justifyContent:'flex-start', height:150}}>
+                <Text style={styles.text}>Sign Up!</Text>
+            </View>
+
             <View style={styles.waveContainer}>
                 <Svg height={80} width="100%" viewBox="0 0 1440 320" style={styles.wave}>
                     <Path
@@ -52,13 +55,14 @@ export default function signup() {
             </View>
 
             <View style={styles.buttonWrapper}>
-                <Text style={styles.text}>Sign Up!</Text>
+                <Text style={styles.inputText}>Enter Username</Text>
                 <TextInput 
                     style={styles.input}
                     value={username} 
                     onChangeText={setUsername} 
                     placeholder="Enter Username"
                 />
+                <Text style={styles.inputText}>Enter Email</Text>
                 <TextInput 
                     style={styles.input} 
                     value={email} 
@@ -66,6 +70,7 @@ export default function signup() {
                     placeholder="Enter Email"
                     keyboardType="email-address"
                 />
+                <Text style={styles.inputText}>Enter Password</Text>
                 <TextInput 
                     style={styles.input}
                     value={password} 
@@ -74,15 +79,12 @@ export default function signup() {
                     secureTextEntry 
                 />
                 
-                <TouchableOpacity style={styles.button_container} onPress={() =>{
+                <TouchableOpacity style={styles.buttonContainer} onPress={() =>{
                     signUp();
                 }}>
-                    <Text style={styles.button_text}> Sign Up </Text>
+                    <Text style={styles.buttonText}> Sign Up </Text>
                 </TouchableOpacity>
             </View>
-
-
-
         </View>
     );
 }
@@ -108,16 +110,19 @@ const styles = StyleSheet.create({
       margin: 10,
       borderRadius: 20,
     },
+    inputText:{
+        paddingLeft: 22,
+    },
     buttonWrapper: {
       backgroundColor: '#e1ece3',
       padding: 20,
     },
-    button_text: {
+    buttonText: {
       textAlign: "center",
       fontSize: 18,
       color: "#fff",
     },
-    button_container: {
+    buttonContainer: {
       borderRadius: 10,
       padding: 12,
       margin: 16,
@@ -125,8 +130,10 @@ const styles = StyleSheet.create({
       backgroundColor: "#1DB954",
     },
     text: {
-      fontWeight: "bold",
-      textAlign: "center",
-      fontSize: 24,
-    },
-  });
+        fontWeight: "bold",
+        textAlign: "left",
+        fontSize: 70,
+        padding:20,
+        color:"#e1ece3",
+      },
+    });

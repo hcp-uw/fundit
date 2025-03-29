@@ -1,36 +1,43 @@
 import { StyleSheet, Text, View, TouchableOpacity, TextInput } from "react-native";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { doc, getDoc, setDoc } from "firebase/firestore"; 
-import { app , db , auth} from "../../firebaseConfig";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { doc, getDoc,} from "firebase/firestore"; 
+import { db , auth} from "../../firebaseConfig";
 import { useRef, useState } from "react";
 import { router } from 'expo-router';
 import Svg, { Path } from "react-native-svg";
+import { useEffect } from "react";
 
 export default function login() {
+
     const [password, setPassword] = useState("");
     const [email, setEmail] = useState("");
-    // const auth = getAuth(app);
-    async function login() {
-        console.log("Entering Login")
+
+    useEffect(() => {
+        const unsubscribe = auth.onAuthStateChanged((user) => {
+            if (user) {
+                // User is signed in, navigate to home
+                router.navigate("/(home)/home");
+            } else {
+                // No user is signed in, remain on the login screen
+                console.log("No user is currently signed in.");
+            }
+        });
+
+        // Unsubscribe from the listener when the component unmounts
+        return () => unsubscribe();
+    }, []);
+
+    const login = async() =>{
+        console.log("Entering Login");
         if (!email || !password) {
             console.log("All fields are required.");
             return;
         }
         try {
             const res = await signInWithEmailAndPassword(auth, email, password);
-            // Store user info in Firestore
-
-            const userRef  = await getDoc(doc(db,"Users",res.user.uid));
-            console.log(useRef)
-            if (userRef.exists()) {
-                console.log("Document data:", userRef.data());
-                router.navigate("/(home)/home");
-              } else {
-                // docSnap.data() will be undefined in this case
-                console.log("No such document!");
-              }
-            
-            console.log("User stored in Firestore");
+            // No need to manually store in AsyncStorage here
+            console.log("User logged in successfully:", res.user);
+            // The onAuthStateChanged listener will handle navigation
         } catch (err) {
             if (err instanceof Error) {
                 console.log("Error:", err.message);
@@ -38,24 +45,25 @@ export default function login() {
                 console.log("An unknown error occurred", err);
             }
         }
-        
     }
 
     return (
         <View style={styles.container}>
-            {/* Wave container */}
+            <View style={{justifyContent:'flex-start', height:200}}>
+                <Text style={styles.text}>Login</Text>
+            </View>
+
             <View style={styles.waveContainer}>
             <Svg height={80} width="100%" viewBox="0 0 1440 320" style={styles.wave}>
                 <Path
-                fill="#e1ece3" // Matches background color to blend
+                fill="#e1ece3" 
                 d="M0,200C480,400 960,0 1440,200L1440,320L0,320Z"
                 />
             </Svg>
             </View>
 
-        {/* Main content wrapper */}
             <View style={styles.buttonWrapper}>
-                <Text style={styles.text}>Login</Text>
+                <Text style={styles.inputText}>Enter Email</Text>
                 <TextInput
                     style={styles.input}
                     value={email}
@@ -63,6 +71,7 @@ export default function login() {
                     placeholder="Enter Email"
                     keyboardType="email-address"
                 />
+                <Text style={styles.inputText}>Enter Password</Text>
                 <TextInput
                     style={styles.input}
                     value={password}
@@ -100,6 +109,9 @@ export default function login() {
       margin: 10,
       borderRadius: 20,
     },
+    inputText:{
+        paddingLeft: 22,
+    },
     buttonWrapper: {
       backgroundColor: '#e1ece3',
       padding: 20,
@@ -118,8 +130,10 @@ export default function login() {
     },
     text: {
       fontWeight: "bold",
-      textAlign: "center",
-      fontSize: 24,
+      textAlign: "left",
+      fontSize: 70,
+      padding:20,
+      color:"#e1ece3",
     },
   });
   

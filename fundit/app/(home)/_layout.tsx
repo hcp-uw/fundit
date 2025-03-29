@@ -3,12 +3,6 @@ import { Ionicons } from "@expo/vector-icons";
 
 export default function HomeLayout() {
   return (
-    // <Stack screenOptions={{ headerShown: false }}>
-    //   {/* Auth Stack */}
-    //   <Stack.Screen name="(auth)" />
-
-    //   {/* Main App with Tabs */}
-    // </Stack>
           <Tabs
           screenOptions={{
               tabBarActiveTintColor: '#black',
@@ -43,6 +37,11 @@ export default function HomeLayout() {
                       <Ionicons name={focused ? 'trending-up-outline' : 'trending-up-outline'} color={color} size={24} />
                   ),
               }} />
+              <Tabs.Screen name="settings"         
+                options={{
+                headerShown:false,
+                href: null,
+              }}/>
 
           </Tabs>
       
