@@ -63,12 +63,12 @@ export default function login() {
             </View>
 
             <View style={styles.waveContainer}>
-            <Svg height={80} width="100%" viewBox="0 0 1440 320" style={styles.wave}>
-                <Path
-                fill="#e1ece3" 
-                d="M0,200C480,400 960,0 1440,200L1440,320L0,320Z"
-                />
-            </Svg>
+                <Svg height={80} width="100%" viewBox="0 0 1440 320" style={styles.wave}>
+                    <Path
+                    fill="#e1ece3" 
+                    d="M0,200C480,400 960,0 1440,200L1440,320L0,320Z"
+                    />
+                </Svg>
             </View>
 
             <View style={styles.buttonWrapper}>
@@ -88,6 +88,9 @@ export default function login() {
                     placeholder="Enter Password"
                     secureTextEntry
                 />
+                <TouchableOpacity onPress = {() => router.replace("/(auth)/reset")}>
+                    <Text style={styles.inputText}>Forgot Password?</Text>
+                </TouchableOpacity>
                 <TouchableOpacity style={styles.button_container} onPress={() => login()}>
                     <Text style={styles.button_text}>Login</Text>
                 </TouchableOpacity>
