@@ -1,8 +1,7 @@
-import { StyleSheet, Text, View, TouchableOpacity, TextInput } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, TextInput,Alert } from "react-native";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { doc, getDoc,} from "firebase/firestore"; 
-import { db , auth} from "../../firebaseConfig";
-import { useRef, useState } from "react";
+import { auth} from "../../firebaseConfig";
+import { useState } from "react";
 import { router } from 'expo-router';
 import Svg, { Path } from "react-native-svg";
 import { useEffect } from "react";
@@ -27,26 +26,36 @@ export default function login() {
         return () => unsubscribe();
     }, []);
 
-    const login = async() =>{
+    const login = async () => {
         console.log("Entering Login");
         if (!email || !password) {
             console.log("All fields are required.");
+            Alert.alert("All fields are required.");
             return;
         }
         try {
             const res = await signInWithEmailAndPassword(auth, email, password);
-            // No need to manually store in AsyncStorage here
-            console.log("User logged in successfully:", res.user);
-            // The onAuthStateChanged listener will handle navigation
+            await res.user.reload(); // Refresh user data to get latest email verification status
+    
+            if (res.user.emailVerified) {
+                console.log("User logged in successfully:", res.user);
+                router.replace("/(home)/home");
+            } else {
+                console.log("Email not verified. Please verify your email.");
+                Alert.alert("Email not verified", "Please check your inbox and verify your email before logging in.");
+                router.replace("/(root)/root");
+            }
         } catch (err) {
             if (err instanceof Error) {
                 console.log("Error:", err.message);
+                Alert.alert("Login failed", err.message);
             } else {
                 console.log("An unknown error occurred", err);
+                Alert.alert("Login failed", "An unknown error occurred. Please try again.");
             }
         }
-    }
-
+    };
+    
     return (
         <View style={styles.container}>
             <View style={{justifyContent:'flex-start', height:200}}>

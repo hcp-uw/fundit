@@ -1,10 +1,11 @@
-import { StyleSheet, Text, View, TouchableOpacity, TextInput } from "react-native";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, Alert } from "react-native";
+import { createUserWithEmailAndPassword,sendEmailVerification } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore"; 
 import { db , auth} from "../../firebaseConfig";
 import { useState } from "react";
 import { router } from 'expo-router';
 import Svg, { Path } from "react-native-svg";
+
 
 export default function signup() {
     const [username, setUsername] = useState("");
@@ -17,17 +18,27 @@ export default function signup() {
         }
         try {
             const res = await createUserWithEmailAndPassword(auth, email, password);
-            console.log("User created:", res.user.uid);
+            console.log("User created:", res.user);
+
+            await sendEmailVerification(res.user)
+            .then(() => {
+                Alert.alert("Verification email sent. Please check your inbox.");
+            })
+            .catch((error) => {
+                console.error("Error sending email verification:", error);
+                Alert.alert("Failed to send verification email. Try again later.");
+            });
+
 
             // Store user info in Firestore
-
             await setDoc(doc(db,"Users",res.user.uid), {
                 uid: res.user.uid,
                 username: username,
                 email: email,
                 createdAt: new Date().toISOString()
             });
-            router.back();
+
+                router.back();
 
         } catch (err) {
             if (err instanceof Error) {
