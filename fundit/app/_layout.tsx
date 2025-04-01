@@ -1,37 +1,20 @@
-import { Stack, Tabs } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
+import { Stack } from "expo-router";
 
 export default function RootLayout() {
   return (
-    <Stack screenOptions={{ headerShown: false }}>
-      {/* Auth Stack */}
+    <Stack screenOptions={{ 
+      headerShown: false ,
+      headerStyle: { backgroundColor: '#232723' },
+      headerTintColor:'#e1ece3',
+      }}>
       <Stack.Screen name="(home)" />
+      <Stack.Screen name="(auth)/login" />
+      <Stack.Screen name="(auth)/signup" />
+      <Stack.Screen name="settings" options={{ 
+        headerShown: true,
+        title: "Settings",
 
-
-
-
-      {/* Main App with Tabs */}
+      }} /> {/* ✅ Ensure it's a stack screen */}
     </Stack>
-          // <Tabs
-          // screenOptions={{
-          //     tabBarActiveTintColor: '#black',
-          //     headerStyle: {
-          //     backgroundColor: '#f0f3f7',
-          //     },
-          //     headerShadowVisible: false,
-          //     tabBarStyle: {
-          //     backgroundColor: '#f0f3f7',
-          //     },
-          // }}
-          // >
-          //     <Tabs.Screen name="index" options={{
-          //         title:'Home',
-          //         tabBarIcon: ({ color, focused }) => (
-          //             <Ionicons name={focused ? 'calculator-sharp' : 'calculator-outline'} color={color} size={24} />
-          //         ),
-      
-          //     }} />
-          // </Tabs>
-      
   );
 }

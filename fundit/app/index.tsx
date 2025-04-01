@@ -1,21 +1,27 @@
-import { StyleSheet, Text, View, TouchableOpacity, Button } from "react-native";
-import { useRouter , } from "expo-router";  // Import useRouter from expo-router
+import { StyleSheet, View,} from "react-native";
+import { useRouter } from "expo-router";  // Import useRouter from expo-router
+import {auth} from "../firebaseConfig";
+import { useEffect } from "react";
 
 export default function Index() {
-  const router = useRouter();  // Initialize router for navigation
+  const router = useRouter();  
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+        if (user) {
+            router.replace("/(home)/home");
+        } else {
+            router.replace("/(root)/root");
+        }
+    });
+
+    return () => unsubscribe();
+}, []);
 
 
   return (
-    <View style={styles.container}>  
-      <Text style={styles.text}>Index!</Text>
-
-      <TouchableOpacity style={styles.button_container} onPress={() =>{router.push("/(auth)/signup");}}>
-        <Text style={styles.button_text}>SignUp</Text>
-      </TouchableOpacity> 
-      <TouchableOpacity style={styles.button_container} onPress={() =>{router.push("/(auth)/login");}}>
-        <Text style={styles.button_text}>Login</Text>
-      </TouchableOpacity> 
-
+    <View style={styles.container}>
+      {/* Empty loading area for now */}
     </View>
   );
 }
@@ -23,25 +29,8 @@ export default function Index() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    padding: 20,
-    backgroundColor: "#F2F2F2",
-  },
-  button_text: {
-    textAlign: "center",
-    fontSize: 18,
-    color: "#fff",
-  },
-  button_container: {
-    borderRadius: 10,
-    padding: 12,
-    margin: 16,
-    justifyContent: "center",
-    backgroundColor: "#1DB954",
-  },
-  text: {
-    fontWeight: "bold",
-    textAlign: "center",
-    fontSize: 24,
+    justifyContent: "flex-end",
+    backgroundColor: "#457e59", 
   },
 });
+
