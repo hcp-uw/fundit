@@ -37,7 +37,7 @@ app.post('/api/create_link_token', async function (request, response) {
     // Get the client_user_id by searching for the current user
     // const user = await User.find(...);
     // const clientUserId = user.id;
-    const request = {
+    const linkTokenRequest = {
       user: {
         // This should correspond to a unique id for the current user.
         client_user_id: "test-client-user-id", // clientUserId
@@ -50,10 +50,12 @@ app.post('/api/create_link_token', async function (request, response) {
       country_codes: ['US'],
     };
     try {
-      const createTokenResponse = await client.linkTokenCreate(request);
+      const createTokenResponse = await client.linkTokenCreate(linkTokenRequest);
       response.json(createTokenResponse.data);
     } catch (error) {
       // handle error
+      console.error('Error creating link token:', error.response?.data || error.message);
+      request.status(500).json({ error: 'Failed to create link token' });
     }
   });
 
