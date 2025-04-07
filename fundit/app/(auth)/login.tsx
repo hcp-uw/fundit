@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, TouchableOpacity, TextInput } from "react-nativ
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore"; 
 import { app , db , auth} from "../../firebaseConfig";
-import { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { router } from 'expo-router';
 
 export default function login() {
@@ -29,8 +29,6 @@ export default function login() {
                 console.log("No such document!");
               }
               
-
-
 
             console.log("User stored in Firestore");
         } catch (err) {
