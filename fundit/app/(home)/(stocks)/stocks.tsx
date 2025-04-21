@@ -9,7 +9,6 @@ export default function Stocks() {
   const periods = ['1D', '1W', '1Y', '2Y'];
 
   useEffect(() => {
-    // Only run once on component mount
     getStockData('AAPL');
   }, []);
 
