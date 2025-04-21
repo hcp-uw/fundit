@@ -3,7 +3,7 @@ import { Text,View,StyleSheet,TouchableOpacity,TextInput,Alert } from "react-nat
 import Svg, { Path } from "react-native-svg";
 import { router } from 'expo-router';
 import { auth} from "../../firebaseConfig";
-import { sendPasswordResetEmail,sendEmailVerification } from "firebase/auth";
+import { sendPasswordResetEmail, } from "firebase/auth";
 
 export default function reset(){
     const [email, setEmail] = useState("");
