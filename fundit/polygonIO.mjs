@@ -76,12 +76,8 @@ export default async function getDescription(ticker) {
 	return {name:"No name",description:"No Available Description!"};
 	}
 
-	// Modify this to have  name, desciption
 }
 	
 	
 // Example usage:
 getDescription("AAPL");
-
-// stockAnalysis("MSFT");
-// getDescription("AAPL")
