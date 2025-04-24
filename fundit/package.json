@@ -16,12 +16,8 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^14.0.2",
-<<<<<<< HEAD
     "@polygon.io/client-js": "^7.3.2",
     "@react-native-async-storage/async-storage": "^1.24.0",
-=======
-    "@react-native-async-storage/async-storage": "1.23.1",
->>>>>>> origin/main
     "@react-native-firebase/app": "^21.7.1",
     "@react-native-firebase/auth": "^21.7.1",
     "@react-navigation/bottom-tabs": "^7.2.0",

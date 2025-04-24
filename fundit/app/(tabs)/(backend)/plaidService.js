@@ -5,7 +5,7 @@ const Plaid_ENV = 'sandbox';
 const Plaid_CLIENT_ID = "67a2c1c7dfedf6001d6fc634";
 const Plaid_SECRET = "9f212457f545843fae9aa75ecb28c7";
 
-const express = require('express');
+
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
@@ -62,7 +62,7 @@ app.post('/api/create_link_token', async function (request, response) {
 // 3. Link provides us w/ public-token via onSuccess callback 
         // need to pass public-token from client side code to the server
         // NOTE: because we are using sandbox ---> /sandbox/public_token/create
-const publicTokenRequest: SandboxPublicTokenCreateRequest = {
+/*const publicTokenRequest: SandboxPublicTokenCreateRequest = {
     institution_id: institutionID,
     initial_products: initialProducts,
 };
@@ -82,14 +82,14 @@ const exchangeTokenResponse = await client.itemPublicTokenExchange(
 const accessToken = exchangeTokenResponse.data.access_token;
 } catch (error) {
 // handle error
-}
+}*/
         
 // 4. Server side calls /item/public-token/exchange to get an access-token from the public-token returned by Link
     // access-token uniquely identifies an item --- need for API calls
 
 // 5. /accounts/get retreives basic information about the accounts associated w/ an item
 
-app.get('/api/accounts', async function geti (request, response, next) {
+app.get('/api/accounts', async function getinfo (request, response, next) {
     try {
       const accountsResponse = await client.accountsGet({
         access_token: accessToken,
