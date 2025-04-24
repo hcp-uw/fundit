@@ -16,18 +16,16 @@ const defPara = {
 	whenFrom: yearAgo.toISOString().split("T")[0],
 	whenTo: now.toISOString().split("T")[0]
 };
-const rest = APIsetup();
 // Manual Testing
-if (false) {
-	const rest = APIsetup();
-	rest.stocks.aggregates("AAPL", 1, "day", "2024-02-11", "2025-02-11").then((data) => {
-		console.log(data);
-	}).catch(e => {
-		console.error('An error happened:', e);
-	});
-}
+// if (false) {
+// 	const rest = APIsetup();
+// 	rest.stocks.aggregates("AAPL", 1, "day", "2024-02-11", "2025-02-11").then((data) => {
+// 		console.log(data);
+// 	}).catch(e => {
+// 		console.error('An error happened:', e);
+// 	});
+// }
 
-// API call
 export async function stockBarGraph(stockID, mult=defPara.multiplier, bar=defPara.timePerBar, start=defPara.whenFrom, to=defPara.whenTo) {
 	const rest = APIsetup();
 	return rest.stocks.aggregates(stockID, mult, bar, start, to).then((data) => {
@@ -37,17 +35,6 @@ export async function stockBarGraph(stockID, mult=defPara.multiplier, bar=defPar
 		console.error("Data Error", e);
 		return null;
 	});
-}
-
-export async function stockAnalysis(stockID, mult=defPara.multiplier, bar=defPara.timePerBar, start=defPara.whenFrom, to=defPara.whenTo) {
-	try {
-		const stockData = await stockBarGraph(stockID, mult, bar, start, to);
-		const result = stockData.results;
-		const stat = calculateOvertimeDiff(result);
-		console.log(stat)
-	} catch(e) {
-		console.error("Processing Error", e);
-	}
 }
 
 function calculateOvertimeDiff(result) {
@@ -60,6 +47,68 @@ function calculateOvertimeDiff(result) {
 	}
 	return obj;
 }
+
+
+function getDateRangeFromPeriod(period) {
+	const end = new Date();
+	end.setDate(end.getDate() - 1); // use yesterday as end
+	const start = new Date(end);
+
+	switch (period) {
+		case "1D":
+			start.setDate(end.getDate() - 1);
+			break;
+		case "1W":
+			start.setDate(end.getDate() - 7);
+			break;
+		case "1Y":
+			start.setFullYear(end.getFullYear() - 1);
+			break;
+		case "2Y":
+			start.setFullYear(end.getFullYear() - 2);
+			break;
+		default:
+			throw new Error(`Unsupported period: ${period}`);
+	}
+
+	const range = {
+		from: start.toISOString().split("T")[0],
+		to: end.toISOString().split("T")[0]
+	};
+	console.log(`Date range for ${period}:`, range);
+	return range;
+}
+
+export async function getStockDataByPeriod(stockID, period) {
+	const { from, to } = getDateRangeFromPeriod(period);
+	try {
+		const data = await stockBarGraph(stockID, 1, "day", from, to);
+		if (data && data.results && data.results.length > 1) {
+			const analysis = calculateOvertimeDiff(data.results);
+			console.log(`Final output for ${stockID} (${period}):`, analysis);
+			return {
+				period,
+				data: data.results,
+				analysis,
+			};
+		} else {
+			console.warn(`No data available for ${stockID} over ${period}`);
+			return {
+				period,
+				data: [],
+				analysis: { error: "Insufficient data" }
+			};
+		}
+	} catch (e) {
+		console.error(`Error fetching stock data for ${period}:`, e);
+		return {
+			period,
+			data: [],
+			analysis: { error: "Fetch error" }
+		};
+	}
+}
+
 
 
 export default async function getDescription(ticker) {
@@ -80,4 +129,8 @@ export default async function getDescription(ticker) {
 	
 	
 // Example usage:
-getDescription("AAPL");
+// getDescription("AAPL");
+getStockDataByPeriod("AAPL", "1W")
+
+
+

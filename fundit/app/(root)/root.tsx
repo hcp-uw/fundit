@@ -3,23 +3,21 @@ import { useRouter } from "expo-router";  // Import useRouter from expo-router
 import Svg, { Path } from "react-native-svg";
 
 export default function Root() {
-    const router = useRouter();  // Initialize router for navigation
+    const router = useRouter();  
     return(
         <View style={styles.container}>
-        {/* Background section with wave */}
         <View style={{justifyContent:'center', alignItems:'center'}}>
           <Image source={require("../../assets/images/icon.png")} style={{width:300,height:300}}/>
         </View>
         <View style={styles.waveContainer}>
           <Svg height={80} width="100%" viewBox="0 0 1440 320" style={styles.wave}>
             <Path
-              fill="#e1ece3" // Matches background color to blend
+              fill="#e1ece3" 
               d="M0,200C480,400 960,0 1440,200L1440,320L0,320Z"
               />
           </Svg>
         </View>
   
-        {/* Buttons Section */}
         <View style={styles.buttonWrapper}>
   
           <TouchableOpacity 
