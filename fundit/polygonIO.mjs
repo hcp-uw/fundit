@@ -1,10 +1,10 @@
 import { restClient } from '@polygon.io/client-js';
-//node --env-file=../.env polygonIO.mjs
-
+//node --env-file=.env polygonIO.mjs
 // Setup API Keys, setup default calls to be daily data displayed in bars that spans over
 // a year ago from today
+
 function APIsetup(){
-	return restClient(process.env.POLY_API_KEY);
+    return restClient(process.env.EXPO_PUBLIC_POLY_API_KEY);
 }
 const now = new Date();
 const yearAgo = new Date();
@@ -16,7 +16,7 @@ const defPara = {
 	whenFrom: yearAgo.toISOString().split("T")[0],
 	whenTo: now.toISOString().split("T")[0]
 };
-
+const rest = APIsetup();
 // Manual Testing
 if (false) {
 	const rest = APIsetup();
@@ -31,7 +31,7 @@ if (false) {
 export async function stockBarGraph(stockID, mult=defPara.multiplier, bar=defPara.timePerBar, start=defPara.whenFrom, to=defPara.whenTo) {
 	const rest = APIsetup();
 	return rest.stocks.aggregates(stockID, mult, bar, start, to).then((data) => {
-		//console.log(data);
+		// console.log(data);
 		return data;
 	}).catch(e => {
 		console.error("Data Error", e);
@@ -61,4 +61,23 @@ function calculateOvertimeDiff(result) {
 	return obj;
 }
 
-stockAnalysis("MSFT");
+
+export default async function getDescription(ticker) {
+	const rest = APIsetup();
+	try {
+	const data = await rest.reference.tickerDetails(ticker);
+	const output = { 
+		name: data.results.name,
+		description:data.results.description,
+	}
+	return output;
+	} catch (e) {
+	console.error('An error happened:', e);
+	return {name:"No name",description:"No Available Description!"};
+	}
+
+}
+	
+	
+// Example usage:
+getDescription("AAPL");

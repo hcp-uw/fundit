@@ -1,103 +1,135 @@
-const {Configuration, PlaidApi, PlaidEnvironments} = require('plaid'); 
+require('dotenv').config();
+const http = require('http');
+const { parse } = require('url');
+const { Configuration, PlaidApi, PlaidEnvironments } = require('plaid');
 
-// NOTE: CHANGE LATER ---> need more secure way 
-const Plaid_ENV = 'sandbox';
-const Plaid_CLIENT_ID = "67a2c1c7dfedf6001d6fc634";
-const Plaid_SECRET = "9f212457f545843fae9aa75ecb28c7";
+// Session workaround using a simple in-memory store --- just until we connect to firebase
+const sessions = {};
 
-
-const bodyParser = require('body-parser');
-const cors = require('cors');
-
-// create new config and client
-const configuration = new Configuration({
-    basePath: PlaidEnvironments[Plaid_ENV],
-    baseOptions: {
-      headers: {
-        'PLAID-CLIENT-ID': Plaid_CLIENT_ID,
-        'PLAID-SECRET': Plaid_SECRET
-      },
+// Set up Plaid client
+const config = new Configuration({
+  basePath: PlaidEnvironments[process.env.PLAID_ENV],
+  baseOptions: {
+    headers: {
+      'PLAID-CLIENT-ID': process.env.PLAID_CLIENT_ID,
+      'PLAID-SECRET': process.env.PLAID_SECRET,
+      'Plaid-Version': '2020-09-14',
     },
+  },
+});
+const client = new PlaidApi(config);
+console.log('Client ID:', process.env["PLAID_CLIENT_ID"]);
+console.log('Secret:', process.env["PLAID_SECRET"]);
+
+
+// Helper to read POST body
+function getRequestBody(req) {
+  return new Promise((resolve, reject) => {
+    let body = '';
+    req.on('data', chunk => (body += chunk));
+    req.on('end', () => resolve(JSON.parse(body || '{}')));
+    req.on('error', reject);
   });
-const client = new PlaidApi(configuration);
+}
 
-const app = express();
-app.use(
-  bodyParser.urlencoded({
-    extended: false,
-  }),
-);
-app.use(bodyParser.json());
-app.use(cors());
+// Server logic
+const server = http.createServer(async (req, res) => {
+  const parsedUrl = parse(req.url, true);
+  const { pathname } = parsedUrl;
+  const method = req.method;
 
+  // This is just temporary -- will want to use data from firebase here 
+  const sessionId = req.headers['x-session-id'] || req.socket.remoteAddress + '-' + Date.now();
+  if (!sessions[sessionId]) sessions[sessionId] = {};
+
+  res.setHeader('Content-Type', 'application/json');
+  res.setHeader('Access-Control-Allow-Origin', '*'); // for dev
+  res.setHeader('Access-Control-Allow-Headers', '*');
+
+  if (method === 'OPTIONS') {
+    res.writeHead(204);
+    res.end();
+    return;
+  }
+  
 // 1. create a new link_token by making a /link/token/create request and passing in the required configurations. 
 // This link_token is a short lived, one-time use token that authenticates your app with Plaid Link, our frontend module.
-
-app.post('/api/create_link_token', async function (request, response) {
-    // Get the client_user_id by searching for the current user
-    // const user = await User.find(...);
-    // const clientUserId = user.id;
-    const request = {
-      user: {
-        // This should correspond to a unique id for the current user.
-        client_user_id: "test-client-user-id", // clientUserId
-      },
-      client_name: 'Plaid Test App',
-      products: ['auth'],
-      language: 'en',
-      webhook: 'https://webhook.example.com',
-      redirect_uri: 'https://domainname.com/oauth-page.html',
-      country_codes: ['US'],
-    };
-    try {
-      const createTokenResponse = await client.linkTokenCreate(request);
-      response.json(createTokenResponse.data);
-    } catch (error) {
-      // handle error
-    }
-  });
 
 // 2. Use link-token to initialize a Link (drop-in client-side module that handels authenication)
         // what users use to log into finanical institution accounts
 // 3. Link provides us w/ public-token via onSuccess callback 
         // need to pass public-token from client side code to the server
-        // NOTE: because we are using sandbox ---> /sandbox/public_token/create
-/*const publicTokenRequest: SandboxPublicTokenCreateRequest = {
-    institution_id: institutionID,
-    initial_products: initialProducts,
-};
-try {
-const publicTokenResponse = await client.sandboxPublicTokenCreate(
-    publicTokenRequest,
-);
-const publicToken = publicTokenResponse.data.public_token;
-// The generated public_token can now be exchanged
-// for an access_token
-const exchangeRequest: ItemPublicTokenExchangeRequest = {
-    public_token: publicToken,
-};
-const exchangeTokenResponse = await client.itemPublicTokenExchange(
-    exchangeRequest,
-);
-const accessToken = exchangeTokenResponse.data.access_token;
-} catch (error) {
-// handle error
-}*/
-        
+      
 // 4. Server side calls /item/public-token/exchange to get an access-token from the public-token returned by Link
     // access-token uniquely identifies an item --- need for API calls
 
 // 5. /accounts/get retreives basic information about the accounts associated w/ an item
 
-app.get('/api/accounts', async function getinfo (request, response, next) {
+  
+  if (pathname === '/api/create_link_token' && method === 'POST') {  // Create link token
+    const body = await getRequestBody(req);
+    const address = body.address;
+
+    const payload = {
+      user: { client_user_id: sessionId },
+      client_name: 'Plaid Tiny Quickstart - React Native',
+      language: 'en',
+      products: ['auth'],
+      country_codes: ['US']
+      //...(address === 'localhost'
+      //  ? { redirect_uri: process.env.PLAID_SANDBOX_REDIRECT_URI }
+      //  : { android_package_name: process.env.PLAID_ANDROID_PACKAGE_NAME }),
+    };
+
     try {
-      const accountsResponse = await client.accountsGet({
-        access_token: accessToken,
-      });
-      prettyPrintResponse(accountsResponse);
-      response.json(accountsResponse.data);
-    } catch (error) {
-      prettyPrintResponse(error);
-      return response.json(formatError(error.response));
+      const tokenResponse = await client.linkTokenCreate(payload);
+      res.end(JSON.stringify(tokenResponse.data));
+    } catch (err) {
+      console.error(err);
+      res.writeHead(500);
+      res.end(JSON.stringify({ error: err.message }));
     }
-  });
+  } else if (pathname === '/api/exchange_public_token' && method === 'POST') {  // Exchange public token
+    const body = await getRequestBody(req);
+
+    try {
+      const exchangeResponse = await client.itemPublicTokenExchange({
+        public_token: body.public_token,
+      });
+
+      sessions[sessionId].access_token = exchangeResponse.data.access_token;
+      res.end(JSON.stringify({ success: true }));
+    } catch (err) {
+      console.error(err);
+      res.writeHead(500);
+      res.end(JSON.stringify({ error: err.message }));
+    }
+  } else if (pathname === '/api/balance' && method === 'POST') {  // Get balances
+    const access_token = sessions[sessionId].access_token;
+
+    if (!access_token) {
+      res.writeHead(401);
+      res.end(JSON.stringify({ error: 'Not authorized' }));
+      return;
+    }
+
+    try {
+      const balanceResponse = await client.accountsBalanceGet({ access_token });
+      res.end(JSON.stringify({ Balance: balanceResponse.data }));
+    } catch (err) {
+      console.error(err);
+      res.writeHead(500);
+      res.end(JSON.stringify({ error: err.message }));
+    }
+
+  } else {
+    res.writeHead(404);
+    res.end(JSON.stringify({ error: 'Route not found' }));
+  }
+});
+
+// Start the server
+const port = 8080;
+server.listen(port, () => {
+  console.log(`Backend server listening on port ${port}...`);
+});
