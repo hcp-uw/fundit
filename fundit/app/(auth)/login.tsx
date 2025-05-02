@@ -14,17 +14,15 @@ export default function login() {
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged((user) => {
             if (user) {
-                // User is signed in, navigate to home
                 router.replace("/(home)/home");
             } else {
-                // No user is signed in, remain on the login screen
                 console.log("No user is currently signed in.");
             }
         });
-
-        // Unsubscribe from the listener when the component unmounts
+    
         return () => unsubscribe();
     }, []);
+    
 
     const login = async () => {
         console.log("Entering Login");

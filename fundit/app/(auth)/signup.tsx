@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, TouchableOpacity, TextInput, Alert } from "react-native";
-import { createUserWithEmailAndPassword,sendEmailVerification } from "firebase/auth";
+import {createUserWithEmailAndPassword,sendEmailVerification } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore"; 
 import { db , auth} from "../../firebaseConfig";
 import { useState } from "react";
