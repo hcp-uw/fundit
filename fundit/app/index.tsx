@@ -1,23 +1,23 @@
-import { StyleSheet, View,} from "react-native";
-import { useRouter } from "expo-router";  // Import useRouter from expo-router
-import {auth} from "../firebaseConfig";
+import { StyleSheet, View } from "react-native";
+import { useRouter } from "expo-router";
+import { auth } from "../firebaseConfig";
 import { useEffect } from "react";
+import type { User } from "firebase/auth/react-native"; 
 
 export default function Index() {
-  const router = useRouter();  
+  const router = useRouter();
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-        if (user) {
-            router.replace("/(home)/home");
-        } else {
-            router.replace("/(root)/root");
-        }
+    const unsubscribe = auth.onAuthStateChanged((user: User | null) => {  
+      if (user) {
+        router.replace("/(home)/home");
+      } else {
+        router.replace("/(root)/root");
+      }
     });
 
     return () => unsubscribe();
-}, []);
-
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -30,7 +30,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "flex-end",
-    backgroundColor: "#457e59", 
+    backgroundColor: "#457e59",
   },
 });
-

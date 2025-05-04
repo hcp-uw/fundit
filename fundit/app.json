@@ -15,13 +15,15 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.navneethd8.fundit"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#232723"
-      }
+      },
+      "package": "com.navneethd8.fundit"
     },
     "web": {
       "bundler": "metro",
@@ -35,8 +37,7 @@
         {
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 200,
-          "resizeMode": "stretch",
-          "backgroundColor":"#black"
+          "backgroundColor": "#457e59"
         }
       ]
     ],

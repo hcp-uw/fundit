@@ -11,8 +11,6 @@ export default function home() {
             <View>
                 <Text style={styles.text}>WELCOME TO FUNDIT!</Text>
             </View>
-
-
         </View>
     );
 }

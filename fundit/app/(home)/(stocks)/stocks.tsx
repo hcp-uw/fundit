@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-nati
 import getDesciption from '../../../polygonIO.mjs';
 
 export default function Stocks() {
-  const [selectedPeriod, setSelectedPeriod] = useState('1D');
+  const [selectedPeriod, setSelectedPeriod] = useState<any | undefined>('1D');
   const [stockDescription, setStockDescription] = useState<any | undefined>('');
   const [stockName, setStockName] = useState<any | undefined>('');
   const periods = ['1D', '1W', '1Y', '2Y'];
@@ -18,6 +18,11 @@ export default function Stocks() {
     setStockName(data.name);
   }
 
+  async function setTime(time: String) {
+    setSelectedPeriod(time);
+    
+  }
+
   return (
     <View style={styles.screenContainer}>
       <View style={styles.selectorContainer}>
@@ -28,7 +33,9 @@ export default function Stocks() {
               styles.periodButton,
               selectedPeriod === period && styles.selectedButton,
             ]}
-            onPress={() => setSelectedPeriod(period)}
+            onPress={() =>{
+              setTime(period)
+            }}
           >
             <Text
               style={[
