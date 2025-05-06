@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { View, Dimensions, ActivityIndicator } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
-import Svg, { Polygon } from 'react-native-svg';
 
 const screenWidth = Dimensions.get('window').width;
+const CHART_WIDTH = screenWidth * 0.9;
+const CHART_HEIGHT = CHART_WIDTH * 0.85;
+const CHART_PADDING = 20;
 
 interface StockChartProps {
   symbol: string;
@@ -11,8 +13,8 @@ interface StockChartProps {
 }
 
 interface AggregatedData {
-  t: number; // timestamp
-  c: number; // close price
+  t: number;
+  c: number;
 }
 
 export const StockChart: React.FC<StockChartProps> = ({ symbol, apiKey }) => {
@@ -37,7 +39,7 @@ export const StockChart: React.FC<StockChartProps> = ({ symbol, apiKey }) => {
 
         const startPrice = prices[0];
         const endPrice = prices[prices.length - 1];
-        const lineColor = endPrice >= startPrice ? '#28a745' : '#dc3545'; // green or red
+        const lineColor = endPrice >= startPrice ? '#28a745' : '#dc3545';
 
         setChartData({ labels, prices, color: lineColor });
       } catch (error) {
@@ -51,7 +53,18 @@ export const StockChart: React.FC<StockChartProps> = ({ symbol, apiKey }) => {
   if (!chartData) return <ActivityIndicator size="large" color="#000" />;
 
   return (
-    <View style={{ position: 'relative', marginVertical: 8 }}>
+    <View
+      style={{
+        width: CHART_WIDTH,
+        height: CHART_HEIGHT,
+        backgroundColor: '#e1ece3',
+        borderRadius: 20,
+        padding: CHART_PADDING,
+        paddingBottom:CHART_PADDING-20,
+        alignSelf: 'center',
+        justifyContent: 'center',
+      }}
+    >
       <LineChart
         data={{
           labels: chartData.labels.filter((_, i) => i % 15 === 0),
@@ -63,17 +76,17 @@ export const StockChart: React.FC<StockChartProps> = ({ symbol, apiKey }) => {
             },
           ],
         }}
-        width={screenWidth - 40}
-        height={240}
+        width={CHART_WIDTH - 2 * CHART_PADDING}
+        height={CHART_HEIGHT - 2 * CHART_PADDING}
         withDots={false}
         withInnerLines={false}
         withOuterLines={true}
         withShadow={false}
         yAxisLabel="$"
         chartConfig={{
-          backgroundColor: '#ffffff',
-          backgroundGradientFrom: '#ffffff',
-          backgroundGradientTo: '#ffffff',
+          backgroundColor: '#e1ece3',
+          backgroundGradientFrom: '#e1ece3',
+          backgroundGradientTo: '#e1ece3',
           decimalPlaces: 2,
           color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
           labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
@@ -86,33 +99,8 @@ export const StockChart: React.FC<StockChartProps> = ({ symbol, apiKey }) => {
         bezier
         style={{
           borderRadius: 16,
-          shadowColor: chartData.color,
-          shadowOffset: { width: 0, height: 4 },
-          shadowOpacity: 0.3,
-          shadowRadius: 4,
-          elevation: 6,
         }}
       />
-
-      {/* SVG Arrowheads */}
-      <Svg
-        height={240}
-        width={screenWidth - 40}
-        style={{ position: 'absolute', top: 0, left: 0 }}
-      >
-        {/* Top-right arrow (right-pointing) */}
-        <Polygon
-          points="0,0 10,5 0,10"
-          fill="#000"
-          transform={`translate(${screenWidth - 60}, 10)`}
-        />
-        {/* Right-end arrow (upward-pointing) */}
-        <Polygon
-          points="0,0 5,-10 10,0"
-          fill="#000"
-          transform={`translate(${screenWidth - 50}, 10) rotate(90)`}
-        />
-      </Svg>
     </View>
   );
 };
