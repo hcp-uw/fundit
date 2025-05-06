@@ -1,6 +1,7 @@
 import { StyleSheet, Text, TouchableOpacity, View, } from "react-native";
 import { useRouter } from "expo-router";  // Import useRouter from expo-router
 import { Ionicons } from "@expo/vector-icons";
+import { StockChart } from "@/components/StockChart";
 export default function home() {
     const router = useRouter();
     return (
@@ -9,8 +10,13 @@ export default function home() {
                     <Ionicons name = 'settings-sharp'style={styles.icon}/>
                 </TouchableOpacity>
             <View>
-                <Text style={styles.text}>WELCOME TO FUNDIT!</Text>
+                  <Text style={styles.text}>WELCOME TO FUNDIT!</Text>
             </View>
+            <View>
+              <StockChart symbol="AAPL" apiKey="Zg6D3pqF88DNv6goJiiUh6h4EkWM9gp7" />
+
+            </View>
+
         </View>
     );
 }

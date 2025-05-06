@@ -29,11 +29,11 @@ const defPara = {
 export async function stockBarGraph(stockID, mult=defPara.multiplier, bar=defPara.timePerBar, start=defPara.whenFrom, to=defPara.whenTo) {
 	const rest = APIsetup();
 	return rest.stocks.aggregates(stockID, mult, bar, start, to).then((data) => {
-		// console.log(data);
+		console.log(data);
 		return data;
 	}).catch(e => {
 		console.error("Data Error", e);
-		return null;
+		return [];
 	});
 }
 
@@ -131,6 +131,9 @@ export default async function getDescription(ticker) {
 // Example usage:
 // getDescription("AAPL");
 getStockDataByPeriod("AAPL", "1W")
+
+
+  
 
 
 
