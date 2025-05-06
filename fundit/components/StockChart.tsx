@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Dimensions, ActivityIndicator } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
+import Svg, { Polygon } from 'react-native-svg';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -26,10 +27,12 @@ export const StockChart: React.FC<StockChartProps> = ({ symbol, apiKey }) => {
         const json = await res.json();
         const results: AggregatedData[] = json.results || [];
 
-        const labels = results.map(d => new Date(d.t).toLocaleDateString('en-US', {
+        const labels = results.map(d =>
+          new Date(d.t).toLocaleDateString('en-US', {
             month: 'short',
-            day: 'numeric'
-          }));
+            day: 'numeric',
+          })
+        );
         const prices = results.map(d => d.c);
 
         const startPrice = prices[0];
@@ -48,42 +51,68 @@ export const StockChart: React.FC<StockChartProps> = ({ symbol, apiKey }) => {
   if (!chartData) return <ActivityIndicator size="large" color="#000" />;
 
   return (
-    <LineChart
-      data={{
-        labels: chartData.labels.filter((_, i) => i % 15 === 0),
-        datasets: [{ data: chartData.prices, color: () => chartData.color, strokeWidth: 3 }],
-      }}
-      width={screenWidth - 40}
-      height={240}
-      withDots={false}
-      withInnerLines={false}
-      withOuterLines={false}
-      withShadow={false}
-      yAxisLabel="$"
-      chartConfig={{
-        backgroundColor: '#ffffff',
-        backgroundGradientFrom: '#ffffff',
-        backgroundGradientTo: '#ffffff',
-        decimalPlaces: 2,
-        color: (opacity = 1) => chartData.color,
-        labelColor: () => '#000000',
-        propsForBackgroundLines: {
-          strokeWidth: 0,
-        },
-        propsForDots: {
-          r: '0',
-        },
-      }}
-      bezier
-      style={{
-        marginVertical: 8,
-        borderRadius: 16,
-        shadowColor: chartData.color,
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.3,
-        shadowRadius: 4,
-        elevation: 6,
-      }}
-    />
+    <View style={{ position: 'relative', marginVertical: 8 }}>
+      <LineChart
+        data={{
+          labels: chartData.labels.filter((_, i) => i % 15 === 0),
+          datasets: [
+            {
+              data: chartData.prices,
+              color: () => chartData.color,
+              strokeWidth: 3,
+            },
+          ],
+        }}
+        width={screenWidth - 40}
+        height={240}
+        withDots={false}
+        withInnerLines={false}
+        withOuterLines={true}
+        withShadow={false}
+        yAxisLabel="$"
+        chartConfig={{
+          backgroundColor: '#ffffff',
+          backgroundGradientFrom: '#ffffff',
+          backgroundGradientTo: '#ffffff',
+          decimalPlaces: 2,
+          color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+          labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+          propsForBackgroundLines: {
+            stroke: '#000000',
+            strokeWidth: 2,
+            strokeDasharray: '', // solid lines
+          },
+        }}
+        bezier
+        style={{
+          borderRadius: 16,
+          shadowColor: chartData.color,
+          shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: 0.3,
+          shadowRadius: 4,
+          elevation: 6,
+        }}
+      />
+
+      {/* SVG Arrowheads */}
+      <Svg
+        height={240}
+        width={screenWidth - 40}
+        style={{ position: 'absolute', top: 0, left: 0 }}
+      >
+        {/* Top-right arrow (right-pointing) */}
+        <Polygon
+          points="0,0 10,5 0,10"
+          fill="#000"
+          transform={`translate(${screenWidth - 60}, 10)`}
+        />
+        {/* Right-end arrow (upward-pointing) */}
+        <Polygon
+          points="0,0 5,-10 10,0"
+          fill="#000"
+          transform={`translate(${screenWidth - 50}, 10) rotate(90)`}
+        />
+      </Svg>
+    </View>
   );
 };

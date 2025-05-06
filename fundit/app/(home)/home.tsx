@@ -13,7 +13,7 @@ export default function home() {
                   <Text style={styles.text}>WELCOME TO FUNDIT!</Text>
             </View>
             <View>
-              <StockChart symbol="AAPL" apiKey="Zg6D3pqF88DNv6goJiiUh6h4EkWM9gp7" />
+              <StockChart symbol="AAPL" apiKey="" />
 
             </View>
 
